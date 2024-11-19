@@ -6,6 +6,7 @@ import HospitalFinder from '../components/HospitalFinder';
 import RecoveryExercises from '../components/RecoveryExercises';
 import ScanHistory from '../components/ScanHistory';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
@@ -14,10 +15,10 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth(); // Access authentication state
 
   const handleFileChange = (event) => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    if (!isLoggedIn) {
       setIsModalOpen(true); // Show modal if not authenticated
       return;
     }
@@ -27,8 +28,7 @@ const HomePage = () => {
 
   const handleFileDrop = (event) => {
     event.preventDefault();
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    if (!isLoggedIn) {
       setIsModalOpen(true); // Show modal if not authenticated
       return;
     }
@@ -36,7 +36,16 @@ const HomePage = () => {
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!isLoggedIn) {
+      setErrorMessage('You must be logged in to upload an image.');
+      return;
+    }
+
+    if (!file) {
+      setErrorMessage('Please select a file before uploading.');
+      return;
+    }
+
     setIsLoading(true);
     setErrorMessage(null);
 
@@ -72,7 +81,7 @@ const HomePage = () => {
       {/* Main Grid */}
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Main Upload Card */}
-        <div className="bg-amber-100/10 rounded-3xl p-6 backdrop-blur-sm" style={{ height: '380px' }}>
+        <div className="bg-amber-100/10 rounded-3xl p-6 backdrop-blur-sm">
           <h2 className="text-lg font-semibold mb-4">Upload your X-ray</h2>
 
           <div

@@ -8,7 +8,7 @@ import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import Exercises from './pages/Exercises'
-import { useAuth } from './context/AuthContext';
+import Aboutt from './pages/About';
 
 // const PrivateRoute = ({ children }) => {
 //   const { isAuthenticated } = useAuth();
@@ -27,6 +27,7 @@ const App = () => {
             <Route path="/sign-up" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/exercises" element={<Exercises />} />
+            <Route path="/about" element={<Aboutt />} />
 
           
           </Routes>

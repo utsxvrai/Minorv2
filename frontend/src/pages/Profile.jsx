@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Clock, Image, MessageSquare } from 'lucide-react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({ name: '', email: '' });
   const [error, setError] = useState(null);
-
 
   // Hardcoded data for scan and chat history
   const scanHistory = [
@@ -35,28 +36,30 @@ const Profile = () => {
   ];
 
   // Fetch profile information from the backend
-
   const token = localStorage.getItem('authToken');
-  
+
   const fetchProfile = async () => {
     try {
-      
-      // console.log(token);
-      const response = await (await axios.post('http://localhost:5000/api/v1/profile',{token: token})).data;
-
-      console.log("hi" ,response);
-      setProfile(response.data);
+      const response = await axios.post('http://localhost:5000/api/v1/profile', { token });
+      console.log(response);
+      setProfile(response.data.data);
       setError(null);
     } catch (err) {
+      navigate('/sign-in');
       console.error('Error fetching profile:', err);
       setError('Failed to load profile information.');
     }
   };
-  useEffect(() => {
-    
 
+  useEffect(() => {
     fetchProfile();
   }, []);
+
+  // Handle logout functionality
+  const handleLogout = () => {
+    logout(); // Clear the auth context state
+    navigate('/sign-in'); // Redirect to the login page
+  };
 
   if (error) {
     return (
@@ -74,7 +77,7 @@ const Profile = () => {
           <h1 className="text-3xl font-bold mb-2">Welcome back, {profile.name || 'User'}</h1>
           <p className="text-blue-100">{profile.email || 'Loading...'}</p>
           <button
-            onClick={() => logout()}
+            onClick={handleLogout}
             className="mt-4 bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded-lg transition-colors"
           >
             Logout

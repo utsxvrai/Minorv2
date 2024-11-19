@@ -40,7 +40,7 @@ const LoginPage = () => {
       // Save token and user name in localStorage 
         localStorage.setItem('authToken', token);
 
-      login(token); // Save token and user details in the context (AuthContext)
+        login(token); // Save token and user details in the context (AuthContext)
         toast.success(response.data.message);
         toast.success(response.data.message);
         navigate('/'); // Redirect to the home page
